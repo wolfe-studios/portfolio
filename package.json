@@ -11,6 +11,9 @@
     "url": "https://github.com/wolfe-studios/portfolio.git"
   },
   "devDependencies": {
-    "gulp": "^3.8.6"
+    "gulp": "^3.8.6",
+    "gulp-image-resize": "^0.5.0",
+    "harp": "^0.12.1",
+    "q": "^1.0.1"
   }
 }
