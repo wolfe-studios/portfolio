@@ -1,0 +1,16 @@
+{
+  "name": "portfolio-wolfe-studios",
+  "version": "0.0.0",
+  "description": "Portfolio Site of Alexander Wolfe",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wolfe-studios/portfolio.git"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.6"
+  }
+}
