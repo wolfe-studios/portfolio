@@ -1,8 +1,9 @@
+
 body{
   font-family: "Helvetica";
   text-align: center;
   padding: 50px 20px 0;
-  background: #f4f4f7;
+  background: green;
   color: #444;
   margin: 0;
 }
@@ -12,6 +13,8 @@ h1{
   line-height: 1.2em;
   border-bottom: #CCC solid 1px;
   padding: 20px 0;
+  background: #CCC;
+  border-radius: 3px;
 }
 
 h3{
