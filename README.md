@@ -7,5 +7,8 @@ I've create the project as a public repo so that you can view the code easily to
 - Sass - CSS preprocessor http://sass-lang.com/
 
 ## Run Project
-- `$ harp server site` to run locally on http://localhost:9000/
-- `$ harp compile site` to build for production
+- `$ brew install imagemagick` Required for image resizing
+- `$ brew install graphicsmagick` Required for image resizing
+- `$ npm install` install node modules
+- `$ gulp` Run gulp to build the site
+- Open the browser at http://localhost:8000
