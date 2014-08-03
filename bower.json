@@ -1,0 +1,13 @@
+{
+  "name": "Wolfe Studios",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jQuery": "~2.1.1"
+  }
+}
