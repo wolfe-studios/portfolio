@@ -11,7 +11,32 @@ var imageResize     = require('gulp-image-resize');
 var connect         = require('gulp-connect');
 var Q               = require('q');
 var harp            = require('harp');
+var del             = require('del');
+var openPage        = require("gulp-open");
 
+/**
+*  CLEAN
+*
+*  Delete files and directories
+*/
+gulp.task('clean', function() {
+  return Q.promise(function(resolve, error) {
+    del(['.tmp/', 'build/'], function (err) {
+      console.log('Files deleted');
+      resolve();
+    });
+  });
+});
+
+/**
+*  OPEN
+*
+*  Open a the homepage in the browser
+*/
+gulp.task('open', function() {
+  var stream = gulp.src("build/index.html")
+      .pipe(openPage("", {app: "Google Chrome", url: "http://localhost:8000"}));
+});
 
 /**
 *  HARP FRAMEWORK
@@ -90,12 +115,12 @@ gulp.task('images:production', function() {
 *
 *  bower file, common js modules, uglify, minify
 */
-gulp.task('bower', function() {
-    return gulp.src(mainBowerFiles())
-        .pipe(gulp.dest('public/libs'));
+gulp.task('bowerFiles', function() {
+  return gulp.src(mainBowerFiles())
+    .pipe(gulp.dest('public/libs'));
 });
 
-gulp.task('js', ['bower'], function() {
+gulp.task('js', ['bowerFiles'], function() {
   var stream = gulp.src('resources/js/**/*.js').
       pipe(webpack({
         output: {filename: "site.js"}
@@ -140,5 +165,5 @@ gulp.task('connect', function() {
 *
 *  Local and production build tasks
 */
-gulp.task('default', ['css', 'images', 'js', 'harp', 'watch', 'connect']);
-gulp.task('production', ['css:production', 'images:production', 'js', 'harp']);
+gulp.task('default', ['clean', 'css', 'images', 'js', 'harp', 'watch', 'connect', 'open']);
+gulp.task('production', ['clean', 'css:production', 'images:production', 'js', 'harp']);

@@ -1,3 +1,4 @@
 node_modules/
 production/
 resources/vendor/
+.tmp/
