@@ -21,22 +21,10 @@ var openPage        = require("gulp-open");
 */
 gulp.task('clean', function() {
   return Q.promise(function(resolve, error) {
-    del(['.tmp/', 'build/'], function (err) {
-      console.log('Files deleted');
-      resolve();
-    });
+    del(['.tmp/', 'build/', 'public/css/', 'public/js/', 'public/libs/', 'public/images/'], resolve);
   });
 });
 
-/**
-*  OPEN
-*
-*  Open a the homepage in the browser
-*/
-gulp.task('open', function() {
-  var stream = gulp.src("build/index.html")
-      .pipe(openPage("", {app: "Google Chrome", url: "http://localhost:8000"}));
-});
 
 /**
 *  HARP FRAMEWORK
@@ -165,5 +153,15 @@ gulp.task('connect', function() {
 *
 *  Local and production build tasks
 */
-gulp.task('default', ['clean', 'css', 'images', 'js', 'harp', 'watch', 'connect', 'open']);
+gulp.task('default', ['css', 'images', 'js', 'harp', 'watch', 'connect'], function() {
+  //Now open in browser
+  var stream = gulp.src("build/index.html")
+      .pipe(openPage("", {
+        app: "Google Chrome",
+        url: "http://localhost:8000"
+      }));
+
+  return stream;
+});
+
 gulp.task('production', ['clean', 'css:production', 'images:production', 'js', 'harp']);
