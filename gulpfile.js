@@ -9,24 +9,15 @@ var Q               = require('q');
 var harp            = require('harp');
 
 
-/**
-*  CONSTANTS
-*
-*  File paths for main directorys
-*/
-var SITE = 'site';
-var BUILD = 'build';
-var RESOURCES = 'resources';
-
 
 /**
 *  HARP FRAMEWORK
 *
-*  Run harp to process static site files
+*  Run harp to process static public files
 */
 gulp.task('harp', function() {
   return Q.promise(function(resolve, error) {
-      harp.compile('./', BUILD, resolve);
+    harp.compile('./', 'build', resolve);
   });
 });
 
@@ -40,9 +31,19 @@ gulp.task('css', function() {
   var stream = gulp.src('resources/scss/**/*.scss')
       .pipe(sass())
       .pipe(autoprefixer())
-      .pipe(minifyCSS({ noAdvanced: true }))
       .pipe(gulp.dest('public/css'))
       .pipe(connect.reload());
+
+  return stream;
+});
+
+gulp.task('css:production', function() {
+  var stream = gulp.src('resources/scss/**/*.scss')
+      .pipe(sass())
+      .pipe(autoprefixer())
+      .pipe(minifyCSS({ noAdvanced: true }))
+      .pipe(gulp.dest('public/css'));
+
   return stream;
 });
 
@@ -67,6 +68,19 @@ gulp.task('images', function() {
   return stream;
 });
 
+gulp.task('images:production', function() {
+  var stream = gulp.src('resources/images/**/*.{jpg,png,gif}')
+    .pipe(imageResize({
+      width : 185,
+      height : 300,
+      crop : true,
+      upscale : false
+    }))
+    .pipe(gulp.dest('public/images/thumbnails'));
+
+  return stream;
+});
+
 
 /**
 *  WATCH
@@ -87,7 +101,7 @@ gulp.task('watch', function() {
 */
 gulp.task('connect', function() {
   connect.server({
-    root: 'production',
+    root: 'build',
     port: 8000,
     livereload: true
   });
@@ -100,3 +114,4 @@ gulp.task('connect', function() {
 *  Local and production build tasks
 */
 gulp.task('default', ['css', 'images', 'harp', 'watch', 'connect']);
+gulp.task('production', ['css:production', 'images', 'harp']);
