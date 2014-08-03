@@ -113,7 +113,7 @@ gulp.task('js', ['bowerFiles'], function() {
       pipe(webpack({
         output: {filename: "site.js"}
       }))
-      .pipe(gulp.dest('public/js/'))
+      .pipe(gulp.dest('build/js/'))
       .pipe(connect.reload());
 
   return stream;
@@ -127,7 +127,7 @@ gulp.task('js', ['bowerFiles'], function() {
 */
 gulp.task('watch', function() {
   gulp.watch('resources/scss/**/*.scss', ['css', 'harp']);
-  gulp.watch('resources/js/**/*.js', ['js', 'harp']);
+  gulp.watch('resources/js/**/*.js', ['js']);
   gulp.watch('resources/images/**/*.{jpg,png,gif}', ['images', 'harp']);
   gulp.watch('public/**/*.jade', ['harp']);
 });

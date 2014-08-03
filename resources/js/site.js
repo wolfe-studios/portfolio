@@ -1,11 +1,20 @@
-var Site = {
-  init: function() {
+(function(){
+  "use strict";
 
-  }
-};
+  /* globals $ */
 
-$(function() {
-  Site.init();
-});
+  var Site = {
+    init: function() {
+      setTimeout(function(){
+        $('h1').text('yah');
+      }, 2000);
+    }
+  };
 
-module.exports = Site;
+  $(function() {
+    Site.init();
+  });
+
+  module.exports = Site;
+
+})();
