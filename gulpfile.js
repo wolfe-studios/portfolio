@@ -1,7 +1,7 @@
 var gulp            = require('gulp');
-var gulpBowerFiles  = require('gulp-bower-files');
 var sass            = require('gulp-sass');
 var autoprefixer    = require('gulp-autoprefixer');
+var mainBowerFiles  = require('main-bower-files');
 var minifyCSS       = require('gulp-minify-css');
 var concat          = require('gulp-concat');
 var webpack         = require('gulp-webpack');
@@ -11,7 +11,6 @@ var imageResize     = require('gulp-image-resize');
 var connect         = require('gulp-connect');
 var Q               = require('q');
 var harp            = require('harp');
-
 
 
 /**
@@ -91,12 +90,20 @@ gulp.task('images:production', function() {
 *
 *  bower file, common js modules, uglify, minify
 */
-gulp.task("bower-files", function(){
-    gulpBowerFiles().pipe(gulp.dest("./public/js/libs"));
+gulp.task('bower', function() {
+    return gulp.src(mainBowerFiles())
+        .pipe(gulp.dest('public/libs'));
 });
 
-gulp.task('js', ['bower-files'], function() {
+gulp.task('js', ['bower'], function() {
+  var stream = gulp.src('resources/js/**/*.js').
+      pipe(webpack({
+        output: {filename: "site.js"}
+      }))
+      .pipe(gulp.dest('public/js/'))
+      .pipe(connect.reload());
 
+  return stream;
 });
 
 
@@ -107,6 +114,7 @@ gulp.task('js', ['bower-files'], function() {
 */
 gulp.task('watch', function() {
   gulp.watch('resources/scss/**/*.scss', ['css', 'harp']);
+  gulp.watch('resources/js/**/*.js', ['js', 'harp']);
   gulp.watch('resources/images/**/*.{jpg,png,gif}', ['images', 'harp']);
   gulp.watch('public/**/*.jade', ['harp']);
 });
