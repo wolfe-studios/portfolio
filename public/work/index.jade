@@ -1,1 +1,6 @@
 h1 world
+
+ul
+  for article, slug in public.work._data
+    a(href="/work/#{ slug }")
+      h2= article.title
