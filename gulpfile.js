@@ -10,18 +10,30 @@ var harp            = require('harp');
 
 
 /**
+*  CONSTANTS
+*
+*  File paths for main directorys
+*/
+var SITE = 'site';
+var BUILD = 'build';
+var RESOURCES = 'resources';
+
+
+/**
 *  HARP FRAMEWORK
+*
 *  Run harp to process static site files
 */
 gulp.task('harp', function() {
   return Q.promise(function(resolve, error) {
-      harp.compile('./', 'production', resolve);
+      harp.compile('./', BUILD, resolve);
   });
 });
 
 
 /**
 *  CSS PREPROCESSING
+*
 *  Sass, vender prefix, minify, move
 */
 gulp.task('css', function() {
@@ -56,13 +68,23 @@ gulp.task('images', function() {
 });
 
 
-//WATCH
+/**
+*  WATCH
+*
+*  Rerun process after any of these files are edited
+*/
 gulp.task('watch', function() {
   gulp.watch('resources/scss/**/*.scss', ['css', 'harp']);
   gulp.watch('resources/images/**/*.{jpg,png,gif}', ['images', 'harp']);
 });
 
-//CONNECT SERVER
+
+/**
+*  CONNECT SERVER
+*
+*  Loads the server locally and reloads when
+*  connect.reload() is called.
+*/
 gulp.task('connect', function() {
   connect.server({
     root: 'production',
@@ -71,5 +93,10 @@ gulp.task('connect', function() {
   });
 });
 
-// DEFAULT TASK
+
+/**
+*  BUILD TASKS
+*
+*  Local and production build tasks
+*/
 gulp.task('default', ['css', 'images', 'harp', 'watch', 'connect']);
