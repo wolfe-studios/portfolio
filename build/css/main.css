@@ -2,17 +2,26 @@ body {
   font-family: "Helvetica";
   text-align: center;
   padding: 50px 20px 0;
-  background: green;
   color: #444;
   margin: 0; }
 
-h1 {
-  font-size: 65px;
-  line-height: 1.2em;
-  border-bottom: #CCC solid 1px;
-  padding: 20px 0;
-  background: #CCC;
-  border-radius: 3px; }
+.fixed-top {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 100; }
 
-h3 {
-  font-weight: 300; }
+#main-navigation > h1 {
+  margin: 0px;
+  padding: 0px;
+  color: red;
+  float: left; }
+  #main-navigation > h1 a {
+    text-decoration: none;
+    color: red; }
+#main-navigation > ul {
+  float: right;
+  list-style: none; }
+  #main-navigation > ul li {
+    float: right; }
