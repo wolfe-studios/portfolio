@@ -1,4 +1,5 @@
 var gulp            = require('gulp');
+var exec              = require('child_process').exec;
 var sass            = require('gulp-sass');
 var autoprefixer    = require('gulp-autoprefixer');
 var mainBowerFiles  = require('main-bower-files');
@@ -13,27 +14,46 @@ var Q               = require('q');
 var harp            = require('harp');
 var del             = require('del');
 var openPage        = require("gulp-open");
+var bower           = require("bower");
 
 /**
 *  CLEAN
 *
 *  Delete files and directories
 */
-gulp.task('clean', function() {
+gulp.task('clean:all', function() {
   return Q.promise(function(resolve, error) {
     del(['.tmp/', 'build/', 'public/css/', 'public/js/', 'public/libs/', 'public/images/'], resolve);
   });
 });
 
-
-/**
-*  HARP FRAMEWORK
-*
-*  Run harp to process static public files
-*/
-gulp.task('harp', function() {
+gulp.task('clean:build', function() {
   return Q.promise(function(resolve, error) {
-    harp.compile('./', 'build', resolve);
+    del(['build/'], resolve);
+  });
+});
+
+gulp.task('clean:libs', function() {
+  return Q.promise(function(resolve, error) {
+    del(['.tmp/libs/', 'public/libs/'], resolve);
+  });
+});
+
+gulp.task('clean:css', function() {
+  return Q.promise(function(resolve, error) {
+    del(['.tmp/css/', 'public/css/'], resolve);
+  });
+});
+
+gulp.task('clean:js', function() {
+  return Q.promise(function(resolve, error) {
+    del(['.tmp/js/', 'public/js/'], resolve);
+  });
+});
+
+gulp.task('clean:images', function() {
+  return Q.promise(function(resolve, error) {
+    del(['.tmp/images/', 'public/images/'], resolve);
   });
 });
 
@@ -43,7 +63,7 @@ gulp.task('harp', function() {
 *
 *  Sass, vender prefix, minify, move
 */
-gulp.task('css', function() {
+gulp.task('css', ['clean:css'], function() {
   var stream = gulp.src('resources/scss/**/*.scss')
       .pipe(sass())
       .pipe(autoprefixer())
@@ -53,7 +73,7 @@ gulp.task('css', function() {
   return stream;
 });
 
-gulp.task('css:production', function() {
+gulp.task('css:production', ['clean:css'], function() {
   var stream = gulp.src('resources/scss/**/*.scss')
       .pipe(sass())
       .pipe(autoprefixer())
@@ -70,7 +90,7 @@ gulp.task('css:production', function() {
 *  Take the existing portfolio images and create thumbnails
 *  automatically to be used on the site.
 */
-gulp.task('images', function() {
+gulp.task('images', ['clean:images'], function() {
   var stream = gulp.src('resources/images/**/*.{jpg,png,gif}')
     .pipe(imageResize({
       width : 185,
@@ -84,7 +104,7 @@ gulp.task('images', function() {
   return stream;
 });
 
-gulp.task('images:production', function() {
+gulp.task('images:production', ['clean:images'], function() {
   var stream = gulp.src('resources/images/**/*.{jpg,png,gif}')
     .pipe(imageResize({
       width : 185,
@@ -103,7 +123,18 @@ gulp.task('images:production', function() {
 *
 *  bower file, common js modules, uglify, minify
 */
-gulp.task('bowerFiles', function() {
+gulp.task('bower', function() {
+  exec('bower install', function(err, stdout, stderr) {
+    if (stdout.match(/2\.\d/)) {
+      resolve();
+    }
+    else {
+      reject(new Error('Bower install failed in gulp', err));
+    }
+  });
+});
+
+gulp.task('bowerFiles', ['clean:js'], function() {
   return gulp.src(mainBowerFiles())
     .pipe(gulp.dest('public/libs'));
 });
@@ -117,6 +148,21 @@ gulp.task('js', ['bowerFiles'], function() {
       .pipe(connect.reload());
 
   return stream;
+});
+
+
+/**
+*  HARP FRAMEWORK
+*
+*  Run harp to process public/ files into build/
+*  1. Cleans build folder
+*  2. Preprocess CSS, JS, Images
+*  3. Build with Harp
+*/
+gulp.task('harp', ['clean:build', 'css', 'images', 'js'], function() {
+  return Q.promise(function(resolve, error) {
+    harp.compile('./', 'build', resolve);
+  });
 });
 
 
@@ -153,7 +199,7 @@ gulp.task('connect', function() {
 *
 *  Local and production build tasks
 */
-gulp.task('default', ['css', 'images', 'js', 'harp', 'watch', 'connect'], function() {
+gulp.task('default', ['harp', 'watch', 'connect'], function() {
   //Now open in browser
   var stream = gulp.src("build/index.html")
       .pipe(openPage("", {

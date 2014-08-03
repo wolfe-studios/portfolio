@@ -1,6 +1,6 @@
 {
-  "about": {
-    "title": "Welcome to my about page",
+  "mailgun": {
+    "title": "Mailgun",
     "description": "I’m awesome and so are you"
   },
   "index": {
