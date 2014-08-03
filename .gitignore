@@ -1,4 +1,8 @@
 node_modules/
 build/
+public/js/
+public/css/
+public/images/
+public/libs
 resources/vendor/
 .tmp/
