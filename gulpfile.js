@@ -1,5 +1,5 @@
 var gulp            = require('gulp');
-var exec              = require('child_process').exec;
+var exec            = require('child_process').exec;
 var sass            = require('gulp-sass');
 var autoprefixer    = require('gulp-autoprefixer');
 var mainBowerFiles  = require('main-bower-files');
@@ -136,15 +136,22 @@ gulp.task('bower', function() {
 
 gulp.task('bowerFiles', ['clean:js'], function() {
   return gulp.src(mainBowerFiles())
-    .pipe(gulp.dest('public/libs'));
+    .pipe(gulp.dest('.tmp/libs'));
 });
 
-gulp.task('js', ['bowerFiles'], function() {
+gulp.task('moveJSLibs', ['bowerFiles'], function(){
+  var stream = gulp.src('.tmp/libs/**/*.js')
+      .pipe(gulp.dest('public/js/libs'));
+
+  return stream;
+});
+
+gulp.task('js', ['moveJSLibs'], function() {
   var stream = gulp.src('resources/js/**/*.js').
       pipe(webpack({
         output: {filename: "site.js"}
       }))
-      .pipe(gulp.dest('build/js/'))
+      .pipe(gulp.dest('build/js'))
       .pipe(connect.reload());
 
   return stream;
@@ -165,6 +172,11 @@ gulp.task('harp', ['clean:build', 'css', 'images', 'js'], function() {
   });
 });
 
+gulp.task('harp:production', ['clean:build', 'css:production', 'images:production', 'js:production'], function() {
+  return Q.promise(function(resolve, error) {
+    harp.compile('./', 'build', resolve);
+  });
+});
 
 /**
 *  WATCH
@@ -210,4 +222,4 @@ gulp.task('default', ['harp', 'watch', 'connect'], function() {
   return stream;
 });
 
-gulp.task('production', ['clean', 'css:production', 'images:production', 'js', 'harp']);
+gulp.task('production', ['harp:production']);
