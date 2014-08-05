@@ -13,15 +13,17 @@ var connect         = require('gulp-connect');
 var Q               = require('q');
 var harp            = require('harp');
 var del             = require('del');
+var rename          = require("gulp-rename");
 var openPage        = require("gulp-open");
 var bower           = require("bower");
+
 
 /**
 *  CLEAN
 *
 *  Delete files and directories
 */
-gulp.task('clean:all', function() {
+gulp.task('clean', function() {
   return Q.promise(function(resolve, error) {
     del(['.tmp/', 'build/', 'public/css/', 'public/js/', 'public/libs/', 'public/images/'], resolve);
   });
@@ -41,20 +43,45 @@ gulp.task('clean:libs', function() {
 
 gulp.task('clean:css', function() {
   return Q.promise(function(resolve, error) {
-    del(['.tmp/css/', 'public/css/'], resolve);
+    del(['public/css/'], resolve);
   });
 });
 
 gulp.task('clean:js', function() {
   return Q.promise(function(resolve, error) {
-    del(['.tmp/js/', 'public/js/'], resolve);
+    del(['public/js/'], resolve);
   });
 });
 
 gulp.task('clean:images', function() {
   return Q.promise(function(resolve, error) {
-    del(['.tmp/images/', 'public/images/'], resolve);
+    del(['public/images/'], resolve);
   });
+});
+
+
+/**
+*  BOWER VENDOR LIBRARIES
+*
+*  Get bower libraries flatten and move to libs folder
+*/
+gulp.task('bowerFiles', ['clean:libs'], function() {
+  return gulp.src(mainBowerFiles())
+    .pipe(gulp.dest('.tmp/libs'));
+});
+
+gulp.task('moveJSLibs', ['clean:js', 'bowerFiles'], function(){
+  var stream = gulp.src('.tmp/libs/**/*.js')
+      .pipe(gulp.dest('public/js/libs'));
+
+  return stream;
+});
+
+gulp.task('moveCSSLibs', ['clean:css', 'bowerFiles'], function(){
+  var stream = gulp.src('.tmp/libs/**/*.css')
+      .pipe(gulp.dest('public/css/libs'));
+
+  return stream;
 });
 
 
@@ -63,17 +90,7 @@ gulp.task('clean:images', function() {
 *
 *  Sass, vender prefix, minify, move
 */
-gulp.task('css', ['clean:css'], function() {
-  var stream = gulp.src('resources/scss/**/*.scss')
-      .pipe(sass())
-      .pipe(autoprefixer())
-      .pipe(gulp.dest('public/css'))
-      .pipe(connect.reload());
-
-  return stream;
-});
-
-gulp.task('css:production', ['clean:css'], function() {
+gulp.task('css', ['moveCSSLibs'], function() {
   var stream = gulp.src('resources/scss/**/*.scss')
       .pipe(sass())
       .pipe(autoprefixer())
@@ -85,74 +102,43 @@ gulp.task('css:production', ['clean:css'], function() {
 
 
 /**
-*  IMAGE PROCESSING
+*  JAVASCRIPT PREPROCESSING
 *
-*  Take the existing portfolio images and create thumbnails
-*  automatically to be used on the site.
+*  bower file, common js modules, uglify, minify
 */
-gulp.task('images', ['clean:images'], function() {
-  var stream = gulp.src('resources/images/**/*.{jpg,png,gif}')
-    .pipe(imageResize({
-      width : 185,
-      height : 300,
-      crop : true,
-      upscale : false
-    }))
-    .pipe(gulp.dest('public/images/thumbnails'))
-    .pipe(connect.reload());
-
-  return stream;
-});
-
-gulp.task('images:production', ['clean:images'], function() {
-  var stream = gulp.src('resources/images/**/*.{jpg,png,gif}')
-    .pipe(imageResize({
-      width : 185,
-      height : 300,
-      crop : true,
-      upscale : false
-    }))
-    .pipe(gulp.dest('public/images/thumbnails'));
+gulp.task('js', ['moveJSLibs'], function() {
+  var stream = gulp.src('resources/js/**/*.js').
+      pipe(webpack({
+        output: {filename: "site.js"}
+      }))
+      .pipe(gulp.dest('public/js'));
 
   return stream;
 });
 
 
 /**
-*  JAVASCRIPT PREPROCESSING
+*  IMAGE PROCESSING - CREATE THUMBNAILS
 *
-*  bower file, common js modules, uglify, minify
+*  Take the existing portfolio images and automatically
+*  cretes thumbsnails. The thumbnails directory will be
+*  add to the directory the images were in.
+*  ex. images/widgetco/thumbnails
 */
-gulp.task('bower', function() {
-  exec('bower install', function(err, stdout, stderr) {
-    if (stdout.match(/2\.\d/)) {
-      resolve();
-    }
-    else {
-      reject(new Error('Bower install failed in gulp', err));
-    }
-  });
-});
-
-gulp.task('bowerFiles', ['clean:js'], function() {
-  return gulp.src(mainBowerFiles())
-    .pipe(gulp.dest('.tmp/libs'));
-});
-
-gulp.task('moveJSLibs', ['bowerFiles'], function(){
-  var stream = gulp.src('.tmp/libs/**/*.js')
-      .pipe(gulp.dest('public/js/libs'));
-
-  return stream;
-});
-
-gulp.task('js', ['moveJSLibs'], function() {
-  var stream = gulp.src('resources/js/**/*.js').
-      pipe(webpack({
-        output: {filename: "site.js"}
-      }))
-      .pipe(gulp.dest('build/js'))
-      .pipe(connect.reload());
+gulp.task('images', ['clean:images'], function() {
+  var stream = gulp.src('resources/images/**/*.{jpg,png,gif}')
+    .pipe(gulp.dest('public/images'))
+    .pipe(imageResize({
+      width : 280,
+      height : 300,
+      crop : true,
+      upscale : true,
+      gravity: 'NorthWest'
+    }))
+    .pipe(rename(function (path) {
+        path.dirname += "/thumbnails";
+    }))
+    .pipe(gulp.dest("./public/images")); // public/images/<COMPANY>thumbnails/
 
   return stream;
 });
@@ -166,15 +152,61 @@ gulp.task('js', ['moveJSLibs'], function() {
 *  2. Preprocess CSS, JS, Images
 *  3. Build with Harp
 */
-gulp.task('harp', ['clean:build', 'css', 'images', 'js'], function() {
+gulp.task('harp', function() {
   return Q.promise(function(resolve, error) {
     harp.compile('./', 'build', resolve);
   });
 });
 
-gulp.task('harp:production', ['clean:build', 'css:production', 'images:production', 'js:production'], function() {
+gulp.task('harp:css', ['css'], function() {
   return Q.promise(function(resolve, error) {
     harp.compile('./', 'build', resolve);
+  });
+});
+gulp.task('harp:js', ['js'], function() {
+  return Q.promise(function(resolve, error) {
+    harp.compile('./', 'build', resolve);
+  });
+});
+gulp.task('harp:images', ['images'], function() {
+  return Q.promise(function(resolve, error) {
+    harp.compile('./', 'build', resolve);
+  });
+});
+
+gulp.task('harp:build', ['css', 'images', 'js'], function() {
+  return Q.promise(function(resolve, error) {
+    harp.compile('./', 'build', resolve);
+  });
+});
+
+
+/**
+* WATCH BUILD HTML
+*
+* This happens everytime harp is run. this will
+* reload when js, css, images, or jade files change.
+*/
+gulp.task('html', function () {
+  var stream = gulp.src('build/**/*.html')
+    .pipe(connect.reload());
+
+  return stream;
+});
+
+
+/**
+* FIREBASE
+*
+* The Firebase CLI tool to deploy to a hosting Firebase account
+*/
+gulp.task('firebase', ['harp:build'], function (cb) {
+  return Q.Promise(function(resolve, reject) {
+    exec('firebase deploy', function(err, stdout, stderr) {
+      console.log(stdout);
+      console.log(stderr);
+      resolve();
+    });
   });
 });
 
@@ -184,10 +216,11 @@ gulp.task('harp:production', ['clean:build', 'css:production', 'images:productio
 *  Rerun process after any of these files are edited
 */
 gulp.task('watch', function() {
-  gulp.watch('resources/scss/**/*.scss', ['css', 'harp']);
-  gulp.watch('resources/js/**/*.js', ['js']);
-  gulp.watch('resources/images/**/*.{jpg,png,gif}', ['images', 'harp']);
+  gulp.watch('resources/scss/**/*.scss', ['harp:css']);
+  gulp.watch('resources/js/**/*.js', ['harp:js']);
+  gulp.watch('resources/images/**/*.{jpg,png,gif}', ['harp:images']);
   gulp.watch('public/**/*.jade', ['harp']);
+  gulp.watch('build/**/*.html', ['html']);
 });
 
 
@@ -211,7 +244,7 @@ gulp.task('connect', function() {
 *
 *  Local and production build tasks
 */
-gulp.task('default', ['harp', 'watch', 'connect'], function() {
+gulp.task('default', ['harp:build', 'watch', 'connect'], function() {
   //Now open in browser
   var stream = gulp.src("build/index.html")
       .pipe(openPage("", {
@@ -222,4 +255,4 @@ gulp.task('default', ['harp', 'watch', 'connect'], function() {
   return stream;
 });
 
-gulp.task('production', ['harp:production']);
+gulp.task('deploy', ['firebase']);

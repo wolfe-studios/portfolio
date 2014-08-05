@@ -6,7 +6,7 @@
   var Site = {
     init: function() {
       setTimeout(function(){
-        $('h1').text('yah');
+        $('h1').text('Hellooooo');
       }, 2000);
     }
   };

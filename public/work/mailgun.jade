@@ -1,4 +1,8 @@
-h1 Mailgun
+h2 #{title}
+h3 #{description}
+img(src="#{logo}")
 
-for image in public.images.thumbnails.mailgun._contents
-  img(src="/images/thumbnails/mailgun/#{ image }")
+div
+  for image in public.images.mailgun._contents
+    a(href="/images/mailgun/#{image}")
+      img(src="/images/mailgun/thumbnails/#{ image }")

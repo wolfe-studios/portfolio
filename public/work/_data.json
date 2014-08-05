@@ -1,7 +1,8 @@
 {
   "mailgun": {
     "title": "Mailgun",
-    "description": "I’m awesome and so are you"
+    "description": "Email for Developers",
+    "logo": "/images/mailgun/large-logo.png"
   },
   "index": {
     "title": "This is my home page",
