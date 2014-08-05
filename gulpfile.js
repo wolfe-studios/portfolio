@@ -219,7 +219,7 @@ gulp.task('watch', function() {
   gulp.watch('resources/scss/**/*.scss', ['harp:css']);
   gulp.watch('resources/js/**/*.js', ['harp:js']);
   gulp.watch('resources/images/**/*.{jpg,png,gif}', ['harp:images']);
-  gulp.watch('public/**/*.jade', ['harp']);
+  gulp.watch('public/**/*.{jade,json}', ['harp']);
   gulp.watch('build/**/*.html', ['html']);
 });
 
