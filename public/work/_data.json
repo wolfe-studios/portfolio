@@ -3,9 +3,5 @@
     "title": "Mailgun",
     "description": "Email for Developers",
     "logo": "/images/mailgun/large-logo.png"
-  },
-  "index": {
-    "title": "Work",
-    "description": "All projects"
   }
 }
