@@ -125,20 +125,27 @@ gulp.task('js', ['moveJSLibs'], function() {
 *  add to the directory the images were in.
 *  ex. images/widgetco/thumbnails
 */
-gulp.task('images', ['clean:images'], function() {
-  var stream = gulp.src('resources/images/**/*.{jpg,png,gif}')
-    .pipe(gulp.dest('public/images'))
+gulp.task('images:logos',['clean:images'], function() {
+  var stream = gulp.src('resources/images/logos/**/*.{jpg,png,gif}')
+      .pipe(gulp.dest('public/images/logos'));
+
+  return stream;
+});
+
+gulp.task('images', ['images:logos'], function() {
+  var stream = gulp.src('resources/images/portfolio/**/*.{jpg,png,gif}')
+    .pipe(gulp.dest("public/images/portfolio"))
     .pipe(imageResize({
-      width : 280,
-      height : 300,
-      crop : true,
+      width : 300,
+      height : 400,
+      crop : false,
       upscale : true,
       gravity: 'NorthWest'
     }))
     .pipe(rename(function (path) {
         path.dirname += "/thumbnails";
     }))
-    .pipe(gulp.dest("./public/images")); // public/images/<COMPANY>thumbnails/
+    .pipe(gulp.dest("./public/images/portfolio")); // public/images/<COMPANY>/thumbnails/
 
   return stream;
 });
@@ -209,6 +216,7 @@ gulp.task('firebase', ['harp:build'], function (cb) {
     });
   });
 });
+
 
 /**
 *  WATCH
