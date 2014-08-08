@@ -129,14 +129,19 @@ gulp.task('js', ['moveJSLibs'], function() {
 *  add to the directory the images were in.
 *  ex. images/widgetco/thumbnails
 */
-gulp.task('images:logos',['clean:images'], function() {
-  var stream = gulp.src('resources/images/logos/**/*.{jpg,png,gif}')
-      .pipe(gulp.dest('public/images/logos'));
+gulp.task('images:standard',['clean:images'], function() {
+  var imagePaths = [
+    'resources/images/**/*.{jpg,png,gif}',
+    '!resources/images/portfolio/**/*.{jpg,png,gif}'
+  ];
+
+  var stream = gulp.src(imagePaths)
+      .pipe(gulp.dest('public/images'));
 
   return stream;
 });
 
-gulp.task('images', ['images:logos'], function() {
+gulp.task('images', ['images:standard'], function() {
   var stream = gulp.src('resources/images/portfolio/**/*.{jpg,png,gif}')
     .pipe(gulp.dest("public/images/portfolio"))
     .pipe(imageResize({
