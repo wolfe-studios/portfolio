@@ -6,7 +6,7 @@ var mainBowerFiles  = require('main-bower-files');
 var minifyCSS       = require('gulp-minify-css');
 var concat          = require('gulp-concat');
 var webpack         = require('gulp-webpack');
-var uglify          = require('uglify-js');
+var uglify          = require('gulp-uglify');
 var rev             = require('gulp-rev');
 var imageResize     = require('gulp-image-resize');
 var connect         = require('gulp-connect');
@@ -72,6 +72,8 @@ gulp.task('bowerFiles', ['clean:libs'], function() {
 
 gulp.task('moveJSLibs', ['clean:js', 'bowerFiles'], function(){
   var stream = gulp.src('.tmp/libs/**/*.js')
+      .pipe(concat('vendor.js'))
+      .pipe(uglify())
       .pipe(gulp.dest('public/js/libs'));
 
   return stream;
@@ -79,6 +81,8 @@ gulp.task('moveJSLibs', ['clean:js', 'bowerFiles'], function(){
 
 gulp.task('moveCSSLibs', ['clean:css', 'bowerFiles'], function(){
   var stream = gulp.src('.tmp/libs/**/*.css')
+      .pipe(concat('vendor.css'))
+      .pipe(minifyCSS({ noAdvanced: true }))
       .pipe(gulp.dest('public/css/libs'));
 
   return stream;
@@ -138,7 +142,7 @@ gulp.task('images', ['images:logos'], function() {
     .pipe(imageResize({
       width : 300,
       height : 400,
-      crop : false,
+      crop : true,
       upscale : true,
       gravity: 'NorthWest'
     }))

@@ -1,7 +1,40 @@
 {
+  "firebase": {
+    "title": "Firebase",
+    "description": "The Realtime App Platform",
+    "website": "https://www.firebase.com",
+    "logo": "/images/logos/mailgun.png"
+  },
+
+  "adroll": {
+    "title": "AdRoll",
+    "description": "#1 Retargeting Platform",
+    "logo": "/images/logos/adroll.png",
+    "website": "https://www.adroll.com"
+  },
+
   "mailgun": {
     "title": "Mailgun",
     "description": "Email for Developers",
-    "logo": "/images/mailgun/large-logo.png"
+    "logo": "/images/logos/mailgun.png",
+    "website": "https://www.mailgun.com"
+  },
+
+  "goalstacker": {
+    "title": "GoalStacker",
+    "description": "Get Things Done Today",
+    "logo": "/images/logos/mailgun.png"
+  },
+
+  "boundary": {
+    "title": "Boundary",
+    "description": "Application and infrastructure monitoring",
+    "logo": "/images/logos/mailgun.png"
+  },
+
+  "threadsy": {
+    "title": "Threadsy",
+    "description": "Application and infrastructure monitoring",
+    "logo": "/images/logos/threadsy.png"
   }
 }

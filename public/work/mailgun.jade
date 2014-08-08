@@ -3,6 +3,5 @@ h3 #{description}
 img(src="#{logo}")
 
 div
-  for image in public.images.mailgun._contents
-    a(href="/images/mailgun/#{image}")
-      img(src="/images/mailgun/thumbnails/#{ image }")
+  for image in public.images.portfolio.mailgun._contents
+    != partial('../_partials/thumbnail', {image:image, title:'mailgun'})

@@ -1,0 +1,33 @@
+.nav {
+  padding: 10px;
+
+  .logo {
+    margin: 0px;
+    padding: 0px;
+    float: left;
+
+    a {
+      text-decoration: none;
+      color: #333;
+      line-height: 40px;
+    }
+  }
+
+  ul {
+    margin: 0px;
+    padding: 0px;
+    float: right;
+    list-style: none;
+
+    li {
+      float: right;
+      margin: 0px 0px 0px 20px;
+    }
+
+    a {
+      text-decoration: none;
+      line-height: 40px;
+      color: #333;
+    }
+  }
+}

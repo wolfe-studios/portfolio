@@ -1,11 +1,13 @@
 doctype
 html
   head
-    link(rel="stylesheet" href="css/main.css")
+    link(rel="stylesheet" href="/css/libs/vendor.css")
+    link(rel="stylesheet" href="/css/main.css")
   body
-    != partial('_partials/nav')
-    != yield
-    != partial("_partials/footer")
+    include ./_partials/nav.jade
+    block content
+      != yield
+    include ./_partials/footer.jade
 
-  script(src='js/libs/jquery.js')
+  script(src='/js/libs/vendor.js')
   script(src='/js/site.js')

@@ -17,8 +17,8 @@ I've create the project as a public repo so that you can view the code easily to
 
 ## Build Locally
 - `$ gulp` Run gulp to build the site
-- Open the browser at http://localhost:8000
+- `http://localhost:8000` Local site address
 
 ## Build for Production
-- `$ firebase login` You may have to login or init the firebase first from the command line if you have not done so already.
+- `$ firebase login` You may have to login or init.
 - `$ gulp deploy` Creates a production build and deploys to firebase

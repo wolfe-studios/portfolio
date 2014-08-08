@@ -1,8 +1,5 @@
-doctype
-html
-  head
-    link(rel="stylesheet" href="/css/main.css")
-  body
-    != partial('../_partials/nav')
-    != yield
-    != partial("../_partials/footer")
+extends ../_layout.jade
+
+block content
+  h2 work template
+  != yield

@@ -1,0 +1,7 @@
+h2 #{title}
+h3 #{description}
+img(src="#{logo}")
+
+div
+  for image in public.images.portfolio.threadsy._contents
+    != partial('../_partials/thumbnail', {image:image, title:'threadsy'})
