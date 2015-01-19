@@ -5,9 +5,7 @@
 
   var Site = {
     init: function() {
-      setTimeout(function(){
-        $('h1').text('Hellooooo');
-      }, 2000);
+      console.log('Site javascript module working');
     }
   };
 

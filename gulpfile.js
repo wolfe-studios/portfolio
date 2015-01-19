@@ -3,6 +3,7 @@ var exec            = require('child_process').exec;
 var sass            = require('gulp-sass');
 var autoprefixer    = require('gulp-autoprefixer');
 var mainBowerFiles  = require('main-bower-files');
+var usemin          = require('gulp-usemin');
 var minifyCSS       = require('gulp-minify-css');
 var concat          = require('gulp-concat');
 var webpack         = require('gulp-webpack');

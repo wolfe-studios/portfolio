@@ -3,11 +3,11 @@ html
   head
     link(rel="stylesheet" href="/css/libs/vendor.css")
     link(rel="stylesheet" href="/css/main.css")
+    script(src='/js/libs/vendor.js')
   body
     include ./_partials/nav.jade
     block content
       != yield
     include ./_partials/footer.jade
 
-  script(src='/js/libs/vendor.js')
   script(src='/js/site.js')

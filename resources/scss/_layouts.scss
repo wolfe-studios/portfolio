@@ -3,7 +3,23 @@ body {
   margin: 0;
 }
 
-.fixed-top {
+.l-left {
+  float: left;
+}
+
+.l-right {
+  float: right;
+}
+
+.l-clear {
+  clear: both;
+}
+
+.l-clearfix {
+
+}
+
+.l-fixed-top {
   position: fixed;
   top: 0px;
   left: 0px;
